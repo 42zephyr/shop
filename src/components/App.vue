@@ -1,39 +1,75 @@
 <template>
     <div>
+        
+    
         <form>
-                <input type="text"  v-model.trim="newst.mark"> Оцінка<br>
-                <input type="text"  v-model.trim="newst.name"> Ім'я<br>
-                <select  v-model="newst.group"> Група
+<br>
+               Ім'я   <input type="text"  v-model.trim="name"> <br>
+                Група <select  v-model="group"> 
                     <option>RPZ 17 2/9</option>
                     <option>RPZ 17 1/9</option>
                     <option>RPZ 18 2/9</option>
                     <option>RPZ 18 1/9</option>
                 </select>
                     <br>
-                <input type="text"  v-model.trim="newst.__v"> __v<br>
-                <input type="checkbox"  v-model="newst.isDonePr"> Здав<br>
+               Оцінка <select  v-model="mark"> 
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                    <option>5</option>
+                </select>
+                <br>
+                <input type="checkbox"  v-model="isDonePr"> Здав<br>
                 <input type="submit" v-on:click="add()">
         </form>
             <br>
 
 
             <input type="text" v-model="piece">
-            <table v-for="Student in students" v-bind:key="Student.__id" >
-                
-               <tr  v-bind:class="Student.name.includes(piece)?'':'red'">
-                <td>{{Student.photo}}</td> <td>{{Student.mark}}</td> <td>{{Student.isDonePr}}</td> <td>{{Student.id}} </td><td>{{Student.name}} </td><td>{{Student.group}} </td><td>{{Student.__v}} </td>
-                    <td><div v-if="Student.isDonePr==true"><input type="checkbox" disabled checked="Student.zdav"></div>
-                    <div v-else><input type="checkbox" disabled ></div> </td>
-                    <td><a href="#" v-on:click="del(Student.__id)">Delete</a></td>
+            <table >
+
+               <tr v-for="Student in students" v-bind:key="Student.__id" :ref="Student.Id"  v-bind:class="Student.name.includes(piece)?'':'red'">
+                   <template v-if="Student.Id==chid">
+                    <td><input v-model="Student.name" value="Student.name"></td> 
+                    <td><input type="checkbox" v-model="Student.isDonePr" value="=Student.isDonePr"></td> 
+                    <td>
+                        <select  v-model="Student.mark" value="Student.mark"> 
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                        </select>
+                    </td>
+                <td><button v-on:click.prevent="confirm(Student.Id)" >Update</button></td>
+                </template>
+
+                   <template v-else>
+                <td><img :src="Student.photo" class="photka"></td> 
+                    <td>{{Student.mark}}</td> 
+                    <td>{{Student.isDonePr}}</td> 
+                    <td>{{Student.id}}</td>
+                    <td>{{Student.name}} </td>
+                    <td>{{Student.group}} </td>
+                    <td>{{Student.__v}} </td>
+                    <td><div v-if="Student.isDonePr==true"><input type="checkbox" disabled checked="Student.isDonePr"></div>
+                <div v-else><input type="checkbox" disabled ></div> </td>
+                <td><button v-on:click.prevent="update(Student.Id)" >Update</button></td>
+                    <td><a href="#" v-on:click="del(Student.id)">Delete</a></td>
+                </template>
             </tr> 
             <br>
             </table>
-                <!-- <span style="font-size:25px;">EnterAge:</span>
-                <input v-model.number="age"type="number">
-                <span style="font-size:25px;">EnterMessage:</span>
-                <input v-model.lazy="msg">
-                <span style="font-size:25px;">EnterMessage : </span>
-                <input v-model.trim="message"> -->
+        <select v-model="chcurr" @change="calc()">
+            <option>USD</option>
+            <option>EUR</option>
+            <option>RUR</option>
+            <option>BTC</option>
+        </select>
+        <input type="number" v-model="uahs" @change="calc()">
+        <!-- <button v-on:click.prevent="calc()"> Calc </button> -->
+        {{conv}}
     </div>
 </template>
 
@@ -47,22 +83,31 @@
             return{
                 piece:"",
                     choose:"Yes",
-                    newst:{
-                        'surname':"",
-                        'name': "",
-                        'group': "",
-                        'riknarod':"",
-                        'zdav':"",
-                    },
+                    name:"",
+                    group:"",
+                    isDonePr:"",
+                    mark:"",
                     students :[],
+                    currs:[],
                     search:'',
-                    arsort:[],} 
+                    arsort:[],
+                    chid:"",
+                    chcurr:"",
+                    uahs:"",
+                    conv:"",
+                    
+
+                }
         },
     mounted: function(){
-      axios.get("http://46.101.212.195:3000/students").then((response) =>{
+      Vue.axios.get("http://46.101.212.195:3000/students").then((response) =>{
           console.log(response.data);
           this.students=response.data;
       })  
+      Vue.axios.get("https://api.privatbank.ua/p24api/pubinfo?json&exchange&coursid=5").then((response) =>{
+          console.log(response.data);
+          this.currs=response.data;
+      }) 
     },
     methods:{
         clickme:function(id){
@@ -72,25 +117,54 @@
             })
         },
         del:function(id){
-            this.students.splice(id,1);
-            for (let i=0;i<this.students.length;i++){
-                if (this.students[i].id>id){
-                    this.students[i].id-=1;
-                }
-            }
+            Vue.axios.delete("http://46.101.212.195:3000/students"+id,{})
+             .then((response)=>{ 
+                this.students=this.students.filter(element=>{ 
+                return element._id!==id;});
+            }) 
         },
         add:function(){
-            this.newst['id']=this.students.length;
-            this.students.push(this.newst);
-            this.newst={
-                'photo':"",
-                'mark':"",
-                'isDonePr':"",
-                '__v':"",
-                'name': "",
-                'group': "",
-            };
-            }
+            Vue.axios.post("http://46.101.212.195:3000/students",{
+                name: this.name,
+                group:this.group,
+                isDonePr:this.isDonePr,
+                mark:this.mark
+            })
+            .then((response)=>{
+                console.log(response.data)
+            })
+            },
+        update:function(id){
+            this.chid=id
+        },
+        confirm:function(id){
+            let foundSt=this.students.find((element)=>{
+                return element.__id==id
+            });
+
+            Vue.axios.put("http://46.101.212.195:3000/students",{
+                name: foundSt.name,
+                group:foundSt.group,
+                isDonePr:foundSt.isDonePr,
+                mark:foundSt.mark
+            })
+            .then((response)=>{
+                console.log(response.data)
+            })
+            this.chid=0;
+        },
+        calc:function(){
+            let result=this.currs.find((item)=>{
+                return item.ccy==this.chcurr
+            });
+            this.conv=result.buy*this.uahs
+        }
+    },
+    computed:{
+        //  result=this.currs.find((item)=>{
+        //         return item.ccy==this.chcurr
+        //     }),
+        //     this:conv=result.buy*this.uahs
     }
     }
 </script>
