@@ -29,8 +29,8 @@
             <input type="text" v-model="piece">
             <table >
 
-               <tr v-for="Student in students" v-bind:key="Student.__id" :ref="Student.Id"  v-bind:class="Student.name.includes(piece)?'':'red'">
-                   <template v-if="Student.Id==chid">
+               <tr v-for="Student in students" v-bind:key="Student._id"   v-bind:class="Student.name.includes(piece)?'':'red'">
+                   <template v-if="Student._id==chid">
                     <td><input v-model="Student.name" value="Student.name"></td> 
                     <td><input type="checkbox" v-model="Student.isDonePr" value="=Student.isDonePr"></td> 
                     <td>
@@ -42,21 +42,20 @@
                             <option>5</option>
                         </select>
                     </td>
-                <td><button v-on:click.prevent="confirm(Student.Id)" >Update</button></td>
+                <td><button v-on:click.prevent="confirm(Student._id)" >Update</button></td>
                 </template>
 
                    <template v-else>
-                <td><img :src="Student.photo" class="photka"></td> 
+                <td><img :src="Student.photo" class="photka"  ></td> 
                     <td>{{Student.mark}}</td> 
-                    <td>{{Student.isDonePr}}</td> 
-                    <td>{{Student.id}}</td>
+                    <td><input type="checkbox" disabled v-model="Student.isDonePr" value="=Student.isDonePr"></td> 
+                    <td>{{Student._id}}</td>
                     <td>{{Student.name}} </td>
                     <td>{{Student.group}} </td>
                     <td>{{Student.__v}} </td>
-                    <td><div v-if="Student.isDonePr==true"><input type="checkbox" disabled checked="Student.isDonePr"></div>
-                <div v-else><input type="checkbox" disabled ></div> </td>
-                <td><button v-on:click.prevent="update(Student.Id)" >Update</button></td>
-                    <td><a href="#" v-on:click="del(Student.id)">Delete</a></td>
+                    <td><router-link v-bind:to="'/Studinfo/'+Student._id" v-on:click="clicked(Student._id)">{{Student._id}}</router-link> </td>
+                <td><button v-on:click.prevent="update(Student._id)" >Update</button></td>
+                    <td><a href="#" v-on:click="del(Student._id)">Delete</a></td>
                 </template>
             </tr> 
             <br>
@@ -69,7 +68,7 @@
         </select>
         <input type="number" v-model="uahs" @change="calc()">
         <!-- <button v-on:click.prevent="calc()"> Calc </button> -->
-        {{conv}}
+        {{conv|round}}
     </div>
 </template>
 
@@ -79,6 +78,9 @@
     import VueAxios from 'vue-axios'
 
     export default{
+        props:{
+        id:''
+    },
         data(){
             return{
                 piece:"",
@@ -95,9 +97,15 @@
                     chcurr:"",
                     uahs:"",
                     conv:"",
-                    
+                
 
                 }
+        },
+    filters:{
+            round:function(value){
+                if (!value) return '0'
+                return Math.ceil(value)
+            }
         },
     mounted: function(){
       Vue.axios.get("http://46.101.212.195:3000/students").then((response) =>{
@@ -113,7 +121,7 @@
         clickme:function(id){
             alert("ok");
             this.students=this.students.filter((element)=>{
-                return element.id !==id;
+                return element._id !==id;
             })
         },
         del:function(id){
@@ -122,6 +130,9 @@
                 this.students=this.students.filter(element=>{ 
                 return element._id!==id;});
             }) 
+        },
+        clicked: function(id){
+            console.log(id)
         },
         add:function(){
             Vue.axios.post("http://46.101.212.195:3000/students",{
@@ -139,7 +150,7 @@
         },
         confirm:function(id){
             let foundSt=this.students.find((element)=>{
-                return element.__id==id
+                return element._id==id
             });
 
             Vue.axios.put("http://46.101.212.195:3000/students",{
