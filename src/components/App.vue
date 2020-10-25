@@ -61,6 +61,7 @@
             <br>
             </table>
             <router-link v-bind:to="'/Post/'" >Post</router-link>
+             <router-link v-bind:to="'/Weather/'" >Weather</router-link>
         <select v-model="chcurr" @change="calc()">
             <option>USD</option>
             <option>EUR</option>

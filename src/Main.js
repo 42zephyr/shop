@@ -6,10 +6,12 @@ import Post from './components/Post.vue'
 import App1 from './components/App1.vue'
 import App from './components/App.vue'
 import Studinfo from './components/Studinfo.vue'
+import Weather from './components/Weather.vue'
 
 const routes =[
     {path:'/',component:App},
     {path:'/Post/',component:Post},
+    {path:'/Weather/',component:Weather},
     {path:'/Studinfo/:id',component:Studinfo,props:true},
 ]
 

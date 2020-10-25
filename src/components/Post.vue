@@ -2,11 +2,11 @@
    <div class="main">
        <h1>Post</h1>
        <div class="content">
-           <select v-model="chw" v-for="city in cities" v-bind:key="city.Ref" @change="found()">
-               <option>{{ city.Description }}</option>
+           <select v-model="chw"  @change="found()">
+               <option v-for="city in cities" v-bind:key="city.Ref">{{ city.Description }}</option>
            </select>
            <br>
-           <div v-if="found==true">
+           <div v-if="founded==true">
            <select v-for="wareh in warehs" v-bind:key="wareh.Ref" >
                <option>{{ wareh.Description }}</option>
            </select>
@@ -20,17 +20,17 @@ import Vue from 'vue'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 
-export default {
+export default{
     data(){
         return{
             cities:[],
             chw:"",
             warehs:[],
-            found:false
+            founded:false
         }
     },
     methods:{
-            found:function(){
+            founded:function(){
                  Vue.axios.post("https://api.novaposhta.ua/v2.0/json",
         {
           "modelName": "AddressGeneral",
