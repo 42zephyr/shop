@@ -60,6 +60,7 @@
             </tr> 
             <br>
             </table>
+            <router-link v-bind:to="'/Post/'" >Post</router-link>
         <select v-model="chcurr" @change="calc()">
             <option>USD</option>
             <option>EUR</option>
@@ -97,7 +98,7 @@
                     chcurr:"",
                     uahs:"",
                     conv:"",
-                
+                    
 
                 }
         },
@@ -115,7 +116,7 @@
       Vue.axios.get("https://api.privatbank.ua/p24api/pubinfo?json&exchange&coursid=5").then((response) =>{
           console.log(response.data);
           this.currs=response.data;
-      }) 
+      })
     },
     methods:{
         clickme:function(id){
