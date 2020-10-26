@@ -70,7 +70,8 @@
         </select>
         <input type="number" v-model="uahs" @change="calc()">
         <!-- <button v-on:click.prevent="calc()"> Calc </button> -->
-        {{conv|round}}
+        {{conv|round}}<br>
+        {{studentsCount}}
     </div>
 </template>
 
@@ -178,6 +179,12 @@
         //         return item.ccy==this.chcurr
         //     }),
         //     this:conv=result.buy*this.uahs
+        studentsCount () {
+            let i=0;
+            for (i=0;i<this.students.length;i++){};
+            this.$store.commit('setCount',i);
+                return this.$store.getters.getCount;
+  }
     }
     }
 </script>

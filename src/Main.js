@@ -7,6 +7,7 @@ import App1 from './components/App1.vue'
 import App from './components/App.vue'
 import Studinfo from './components/Studinfo.vue'
 import Weather from './components/Weather.vue'
+import store from './store.js'
 
 const routes =[
     {path:'/',component:App},
@@ -25,5 +26,6 @@ Vue.use(VueAxios,axios)
 new Vue({
     render:h=>h(App1),
     el:'#app',
-    router
+    router,
+    store
 })
