@@ -1,19 +1,16 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import axios from 'axios'
-import VueAxios from 'vue-axios'
-import Post from './components/Post.vue'
-import App1 from './components/App1.vue'
+
 import App from './components/App.vue'
-import Studinfo from './components/Studinfo.vue'
-import Weather from './components/Weather.vue'
+import ProductInfo from './components/ProductInfo.vue'
+import ProductsList from './components/ProductsList.vue'
+import Basket from './components/Basket.vue'
 import store from './store.js'
 
-const routes =[
-    {path:'/',component:App},
-    {path:'/Post/',component:Post},
-    {path:'/Weather/',component:Weather},
-    {path:'/Studinfo/:id',component:Studinfo,props:true},
+const routes = [
+    { path: '/', component: ProductsList },
+    { path: '/Basket/', component: Basket },
+    { path: '/product/:id', component: ProductInfo }
 ]
 
 const router = new VueRouter({
@@ -21,11 +18,10 @@ const router = new VueRouter({
 })
 
 Vue.use(VueRouter)
-Vue.use(VueAxios,axios)
 
 new Vue({
-    render:h=>h(App1),
-    el:'#app',
+    render: h => h(App),
+    el: '#app',
     router,
     store
 })

@@ -8,21 +8,18 @@ Vue.use(Vuex)
 const store= new Vuex.Store({
     plugins: [createPersistedState()],
     state: {
-        count:0,
-        color:''
+        price:0,
+        goods:[]
     },
     mutations: {
-        setCount:(state,c)=>state.count=c,
-        back:(state,style)=>state.color=style,
+        addToC:(state,c)=>state.price+=c,
+        addTog:(state,c)=>state.goods.push(c)
     },
     getters: {
         getCount:(state)=>
         {
-            return ('Кількісь студентів = '+state.count)
+            return ('Ціна = '+state.price+' Перелік товарів:'+state.goods)
         },
-        getback:(state)=>{
-            return(state.color)
-        }
     }
 })
 export default store;
