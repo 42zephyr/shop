@@ -18,7 +18,14 @@
                 Humidity:{{chcty.main.humidity}} <br>
                 Wind speed:{{chcty.wind.speed}} <br>
            </div>
-           {{mycty}}
+           Ваша погода<br>
+           Coordinates:{{mycty.coord}} <br>
+                <!-- Weather:{{chcty.weather.main}} <br>
+                Sky:{{chcty.weather.description}} <br> -->
+                Temperature:{{mycty.main.temp}} <br>
+                 Pressure:{{mycty.main.pressure}} <br>
+                Humidity:{{mycty.main.humidity}} <br>
+                Wind speed:{{mycty.wind.speed}} <br>
        </div>
    </div>
 </template>
@@ -64,13 +71,13 @@ export default{
     mounted:function(){
         this.cities=JSON.parse(localStorage.getItem('cities'))||[];
 
-    navigator.geolocation.getCurrentPosition(this.Positiong);
-    Vue.axios.post('https://api.openweathermap.org/data/2.5/weather?lat='+this.crd.latitude+'&lon'+this.crd.longitude+'&appid=b8d67052dc6c85fb12d75983c11d464b')
+    navigator.geolocation.getCurrentPosition(success=>{
+    Vue.axios.post('https://api.openweathermap.org/data/2.5/weather?lat='+success.coords.latitude+'&lon='+success.coords.latitude+'&appid=b8d67052dc6c85fb12d75983c11d464b')
             .then((response)=>{
                 console.log(response.data);
                 this.mycty=response.data;
             })
-  
+  })
 
     }
 }
