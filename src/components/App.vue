@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div >
         
     
         <form>
@@ -60,6 +60,7 @@
             </tr> 
             <br>
             </table>
+            <div v-bind:class="chst==''?'back1':'back2'">
             <router-link v-bind:to="'/Post/'" >Post</router-link>
              <router-link v-bind:to="'/Weather/'" >Weather</router-link>
         <select v-model="chcurr" @change="calc()">
@@ -70,8 +71,13 @@
         </select>
         <input type="number" v-model="uahs" @change="calc()">
         <!-- <button v-on:click.prevent="calc()"> Calc </button> -->
-        {{conv|round}}<br>
-        {{studentsCount}}
+            {{conv|round}}<br>
+            {{studentsCount}}<br>
+        
+        <input type="radio" value='' v-model="chst" @click="send()">
+            <br>
+            <input type="radio" value='true' v-model="chst" @click="send()">
+        </div>
     </div>
 </template>
 
@@ -100,6 +106,7 @@
                     chcurr:"",
                     uahs:"",
                     conv:"",
+                    chst:''
                     
 
                 }
@@ -114,11 +121,13 @@
       Vue.axios.get("http://46.101.212.195:3000/students").then((response) =>{
           console.log(response.data);
           this.students=response.data;
-      })  
+      });  
       Vue.axios.get("https://api.privatbank.ua/p24api/pubinfo?json&exchange&coursid=5").then((response) =>{
           console.log(response.data);
           this.currs=response.data;
-      })
+      });
+      
+      
     },
     methods:{
         clickme:function(id){
@@ -172,6 +181,9 @@
                 return item.ccy==this.chcurr
             });
             this.conv=result.buy*this.uahs
+        },
+        send:function(){
+            this.$store.commit('back',this.chst);
         }
     },
     computed:{
@@ -184,6 +196,7 @@
             for (i=0;i<this.students.length;i++){};
             this.$store.commit('setCount',i);
                 return this.$store.getters.getCount;
+                this.chst=this.$store.getters.getback;
   }
     }
     }
