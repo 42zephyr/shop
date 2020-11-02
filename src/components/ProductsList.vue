@@ -6,7 +6,7 @@
         </form>
         <div class="product" v-for="(item) in filteredItems" v-bind:key="item.id">
             <div class="product-image">
-                <img v-bind:src="item.src">
+                <img src="http://robohash.org/185.39.11.105.png">
             </div>
             <div>
                 <h4 class="product-title">
@@ -22,7 +22,10 @@
 </template>
 <script>
     import products from '../data/products.js'
-
+    import Vue from 'vue'
+    import VueRouter from 'vue-router'
+    import createPersistedState from 'vuex-persistedstate'
+    import Vuex from 'vuex'
     export default {
         data: function () {
             return {
@@ -39,6 +42,11 @@
         },
         mounted: function(){
             this.items = products;
+            Vue.axios.get("./api/routes/todolistro.js'").then((response) => {
+           console.log(response.data)
+           this.items = response.data;
+         })
+
         },
         computed: {
             filteredItems: function() {

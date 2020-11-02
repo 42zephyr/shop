@@ -18,7 +18,12 @@ const store= new Vuex.Store({
     getters: {
         getCount:(state)=>
         {
-            return ('Ціна = '+state.price+' Перелік товарів:'+state.goods)
+            let glist=[];
+            for (let i=0;i<state.goods.length;i++){
+                glist.push(state.goods[i]);
+                glist.push(" ");
+            }
+            return ('Ціна = '+state.price+' Перелік товарів:'+glist)
         },
     }
 })

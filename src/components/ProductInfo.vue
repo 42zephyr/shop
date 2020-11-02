@@ -12,16 +12,16 @@
     </div>
 </template>
 <script>
-    import products from '../data/products.js'
+    // import items from '../data/products.js'
 
     export default {
         data: function() {
             return {
-                product: null
+                item: null
             };
         },
         mounted: function() {
-            this.product = products.find((item) => {
+            this.item = items.find((item) => {
                 return (item.id === Number(this.$route.params.id));
             });
         }
